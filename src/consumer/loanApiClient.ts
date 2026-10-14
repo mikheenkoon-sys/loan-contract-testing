@@ -8,10 +8,25 @@ export interface Loan {
 }
 
 export class LoanApiClient {
-  constructor(private readonly baseUrl: string) {}
+  constructor(
+    private readonly baseUrl: string,
+    private readonly token?: string) {}
 
-  async getLoan(id: number): Promise<Loan> {
-    const response = await axios.get<Loan>(`${this.baseUrl}/loans/${id}`);
+  async getLoan(id: number): Promise<Loan | null>{
+    try {
+    const response = await axios.get<Loan>(
+      `${this.baseUrl}/loans/${id}`,
+      {
+        headers: this.token ? { Authorization: `Bearer ${this.token}` } : undefined
+      }
+    );
     return response.data;
+  } catch (error: unknown) {
+
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return null;
+    }
+    throw error;
+  }
   }
 }

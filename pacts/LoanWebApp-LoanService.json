@@ -12,6 +12,11 @@
         }
       ],
       "request": {
+        "headers": {
+          "Authorization": [
+            "Bearer test-token"
+          ]
+        },
         "method": "GET",
         "path": "/loans/123"
       },
@@ -53,6 +58,98 @@
           }
         },
         "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request for loan 123",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "loan 123 exists and is pending"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Authorization": [
+            "Bearer test-token"
+          ]
+        },
+        "method": "GET",
+        "path": "/loans/123"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "amount": 1500,
+            "currency": "EUR",
+            "id": 123,
+            "status": "PENDING"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.amount": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.currency": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^(EUR|USD|GBP)$"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request for loan 123 without authorization",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/loans/123"
+      },
+      "response": {
+        "status": 401
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request for loan 999",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "loan 999 does not exist"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Authorization": [
+            "Bearer test-token"
+          ]
+        },
+        "method": "GET",
+        "path": "/loans/999"
+      },
+      "response": {
+        "status": 404
       },
       "type": "Synchronous/HTTP"
     }
